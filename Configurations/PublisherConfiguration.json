@@ -1,0 +1,13 @@
+{
+  "name": "PublisherConfiguration",
+  "description": "Generic Publisher node configuration",
+  "namespace": "common",
+  "fields": [
+    {
+      "name": "topic",
+      "description": "Name of the topic to publish to",
+      "type": "CHAR",
+      "size": 16
+    }
+  ]
+}
