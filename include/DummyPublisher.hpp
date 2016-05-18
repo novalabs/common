@@ -1,3 +1,9 @@
+/* COPYRIGHT (c) 2016 Nova Labs SRL
+ *
+ * All rights reserved. All use of this software and documentation is
+ * subject to the License Agreement located in the file LICENSE.
+ */
+
 #include <Core/MW/Publisher.hpp>
 #include <Core/MW/CoreNode.hpp>
 
@@ -25,64 +31,64 @@
  */
 
 namespace common {
-	template <class _MESSAGETYPE, class _CALLBACK >
-	class DummyPublisher:
-		public Core::MW::CoreNode
-	{
+   template <class _MESSAGETYPE, class _CALLBACK>
+   class DummyPublisher:
+      public Core::MW::CoreNode
+   {
 public:
-		using MessageType = _MESSAGETYPE;
-		using Callback    = _CALLBACK;
+      using MessageType = _MESSAGETYPE;
+      using Callback    = _CALLBACK;
 
 public:
-		DummyPublisher(
-				const char* name
-		) :
-			CoreNode::CoreNode(name)
-		{
-			_workingAreaSize = 256;
-		}
+      DummyPublisher(
+         const char* name
+      ) :
+         CoreNode::CoreNode(name)
+      {
+         _workingAreaSize = 256;
+      }
 
-		virtual
-		~DummyPublisher()
-		{
-			teardown();
-		}
+      virtual
+      ~DummyPublisher()
+      {
+         teardown();
+      }
 
 public:
-		PublisherConfiguration configuration;
+      PublisherConfiguration configuration;
 
 private:
-		Core::MW::Publisher<MessageType> _publisher;
+      Core::MW::Publisher<MessageType> _publisher;
 
 private:
-		bool
-		onPrepareMW()
-		{
-			this->advertise(_publisher, configuration.topic);
+      bool
+      onPrepareMW()
+      {
+         this->advertise(_publisher, configuration.topic);
 
-			return true;
-		}
+         return true;
+      }
 
-		bool
-		onLoop()
-		{
-			MessageType* msgp;
+      bool
+      onLoop()
+      {
+         MessageType* msgp;
 
-			if (_publisher.alloc(msgp)) {
-				if (!Callback::callback(msgp)) {
-					return false;
-				}
+         if (_publisher.alloc(msgp)) {
+            if (!Callback::callback(msgp)) {
+               return false;
+            }
 
-				if (!_publisher.publish(*msgp)) {
-					return false;
-				}
-			} else {
-				Core::MW::Thread::sleep(Configuration::PUBLISHER_RETRY_DELAY);
-			}
+            if (!_publisher.publish(*msgp)) {
+               return false;
+            }
+         } else {
+            Core::MW::Thread::sleep(Configuration::PUBLISHER_RETRY_DELAY);
+         }
 
-			Core::MW::Thread::sleep(Core::MW::Time::ms(500));
+         Core::MW::Thread::sleep(Core::MW::Time::ms(500));
 
-			return true;
-		} // onLoop
-	};
+         return true;
+      } // onLoop
+   };
 }
