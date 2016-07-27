@@ -1,7 +1,7 @@
 {
   "name": "SubscriberConfiguration",
   "description": "Generic Subscriber node configuration",
-  "namespace": "common",
+  "namespace": "@",
   "fields": [
     {
       "name": "topic",

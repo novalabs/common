@@ -1,5 +1,5 @@
 {
   "name": "common",
-  "namespace": "@",
-  "description": "Common Stuff"
+  "description": "Common Stuff",
+  "provider": "core"
 }

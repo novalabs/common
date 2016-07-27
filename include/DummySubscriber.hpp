@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <Core/MW/Subscriber.hpp>
-#include <Core/MW/CoreNode.hpp>
+#include <core/mw/Subscriber.hpp>
+#include <core/mw/CoreNode.hpp>
 
 #include <sensors/SubscriberConfiguration.hpp>
 
@@ -19,7 +19,7 @@
    static bool
    callback(
       const common_msgs::XYZ_i16& msg,
-      Core::MW::Node* node
+      core::mw::Node* node
    )
    {
     ccc++;
@@ -34,53 +34,53 @@
 
 
 namespace common {
-   template <class _MESSAGETYPE, class _CALLBACK>
-   class DummySubscriber:
-      public Core::MW::CoreNode
+template <class _MESSAGETYPE, class _CALLBACK>
+class DummySubscriber:
+   public core::mw::CoreNode
+{
+public:
+   using MessageType = _MESSAGETYPE;
+   using Callback    = _CALLBACK;
+
+public:
+   DummySubscriber(
+      const char* name
+   ) :
+      CoreNode::CoreNode(name)
    {
-public:
-      using MessageType = _MESSAGETYPE;
-      using Callback    = _CALLBACK;
+      _workingAreaSize = 256;
+   }
+
+   virtual
+   ~DummySubscriber()
+   {
+      teardown();
+   }
 
 public:
-      DummySubscriber(
-         const char* name
-      ) :
-         CoreNode::CoreNode(name)
-      {
-         _workingAreaSize = 256;
-      }
-
-      virtual
-      ~DummySubscriber()
-      {
-         teardown();
-      }
-
-public:
-      SubscriberConfiguration configuration;
+   SubscriberConfiguration configuration;
 
 private:
-      bool
-      onPrepareMW()
-      {
-         _subscriber.set_callback(Callback::callback);
-         this->subscribe(_subscriber, configuration.topic);
+   bool
+   onPrepareMW()
+   {
+      _subscriber.set_callback(Callback::callback);
+      this->subscribe(_subscriber, configuration.topic);
 
-         return true;
+      return true;
+   }
+
+   bool
+   onLoop()
+   {
+      if (!this->spin(Configuration::SUBSCRIBER_SPIN_TIME)) {
+         Board::led.toggle();
       }
 
-      bool
-      onLoop()
-      {
-         if (!this->spin(Configuration::SUBSCRIBER_SPIN_TIME)) {
-            Board::led.toggle();
-         }
-
-         return true;
-      }
+      return true;
+   }
 
 private:
-      Core::MW::Subscriber<MessageType, Configuration::SUBSCRIBER_QUEUE_LENGTH> _subscriber;
-   };
+   core::mw::Subscriber<MessageType, Configuration::SUBSCRIBER_QUEUE_LENGTH> _subscriber;
+};
 }

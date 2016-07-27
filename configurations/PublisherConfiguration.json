@@ -1,7 +1,7 @@
 {
   "name": "PublisherConfiguration",
   "description": "Generic Publisher node configuration",
-  "namespace": "common",
+  "namespace": "@",
   "fields": [
     {
       "name": "topic",
