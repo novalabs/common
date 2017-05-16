@@ -1,4 +1,4 @@
-/* COPYRIGHT (c) 2016 Nova Labs SRL
+/* COPYRIGHT (c) 2016-2017 Nova Labs SRL
  *
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
@@ -36,51 +36,51 @@
 namespace common {
 template <class _MESSAGETYPE, class _CALLBACK>
 class DummySubscriber:
-   public core::mw::CoreNode
+    public core::mw::CoreNode
 {
 public:
-   using MessageType = _MESSAGETYPE;
-   using Callback    = _CALLBACK;
+    using MessageType = _MESSAGETYPE;
+    using Callback    = _CALLBACK;
 
 public:
-   DummySubscriber(
-      const char* name
-   ) :
-      CoreNode::CoreNode(name)
-   {
-      _workingAreaSize = 256;
-   }
+    DummySubscriber(
+        const char* name
+    ) :
+        CoreNode::CoreNode(name)
+    {
+        _workingAreaSize = 256;
+    }
 
-   virtual
-   ~DummySubscriber()
-   {
-      teardown();
-   }
+    virtual
+    ~DummySubscriber()
+    {
+        teardown();
+    }
 
 public:
-   SubscriberConfiguration configuration;
+    SubscriberConfiguration configuration;
 
 private:
-   bool
-   onPrepareMW()
-   {
-      _subscriber.set_callback(Callback::callback);
-      this->subscribe(_subscriber, configuration.topic);
+    bool
+    onPrepareMW()
+    {
+        _subscriber.set_callback(Callback::callback);
+        this->subscribe(_subscriber, configuration.topic);
 
-      return true;
-   }
+        return true;
+    }
 
-   bool
-   onLoop()
-   {
-      if (!this->spin(Configuration::SUBSCRIBER_SPIN_TIME)) {
-         Board::led.toggle();
-      }
+    bool
+    onLoop()
+    {
+        if (!this->spin(Configuration::SUBSCRIBER_SPIN_TIME)) {
+            Board::led.toggle();
+        }
 
-      return true;
-   }
+        return true;
+    }
 
 private:
-   core::mw::Subscriber<MessageType, Configuration::SUBSCRIBER_QUEUE_LENGTH> _subscriber;
+    core::mw::Subscriber<MessageType, Configuration::SUBSCRIBER_QUEUE_LENGTH> _subscriber;
 };
 }
